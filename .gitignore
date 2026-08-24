@@ -1,5 +1,19 @@
-node_modules
-dist
-dist-ssr
+# Dependencies
+node_modules/
+
+# Production builds
+dist/
+dist-ssr/
+
+# Local Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
 *.local
+
+# System & Editor files
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

@@ -11,22 +11,23 @@ export interface SyncResult {
 }
 
 export class SheetsService {
-  public static readonly SPREADSHEET_ID = '1oWfdY8Otna7Xs5ViozwC5b5UllPtOfQ_GfwPdwYnPSU';
+  public static readonly SPREADSHEET_ID = import.meta.env.VITE_GOOGLE_SPREADSHEET_ID || '';
 
   public static getSpreadsheetUrl(spreadsheetId: string = this.SPREADSHEET_ID): string {
-    return `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`;
+    return spreadsheetId ? `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit` : '#';
   }
 
   /**
    * Generates standard Google Apps Script backend code that the user can paste into Apps Script
    */
-  public static getAppsScriptTemplate(): string {
+  public static getAppsScriptTemplate(spreadsheetId: string = this.SPREADSHEET_ID): string {
+    const targetId = spreadsheetId || "YOUR_SPREADSHEET_ID_HERE";
     return `/**
  * Google Apps Script - English for Everyone (Level 2) Sync Engine
- * Target Spreadsheet ID: 1oWfdY8Otna7Xs5ViozwC5b5UllPtOfQ_GfwPdwYnPSU
+ * Target Spreadsheet ID: ${targetId}
  */
 
-var TARGET_SPREADSHEET_ID = "1oWfdY8Otna7Xs5ViozwC5b5UllPtOfQ_GfwPdwYnPSU";
+var TARGET_SPREADSHEET_ID = "${targetId}";
 
 function getSpreadsheet() {
   try {

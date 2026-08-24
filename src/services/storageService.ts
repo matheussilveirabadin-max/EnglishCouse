@@ -22,9 +22,9 @@ export class StorageService {
     }
 
     const defaultSettings: SyncSettings = {
-      spreadsheetId: '1oWfdY8Otna7Xs5ViozwC5b5UllPtOfQ_GfwPdwYnPSU',
+      spreadsheetId: import.meta.env.VITE_GOOGLE_SPREADSHEET_ID || '',
       apiKey: '',
-      appsScriptUrl: '',
+      appsScriptUrl: import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL || '',
       autoSync: false,
       syncStatus: 'idle'
     };

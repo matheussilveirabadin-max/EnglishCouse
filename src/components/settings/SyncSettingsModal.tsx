@@ -28,7 +28,7 @@ export const SyncSettingsModal: React.FC<SyncSettingsModalProps> = ({
   const [copiedCode, setCopiedCode] = useState(false);
   const [showScriptCode, setShowScriptCode] = useState(true);
 
-  const scriptCode = SheetsService.getAppsScriptTemplate();
+  const scriptCode = SheetsService.getAppsScriptTemplate(spreadsheetId);
   const sheetUrl = SheetsService.getSpreadsheetUrl(spreadsheetId);
 
   const handleSave = () => {
