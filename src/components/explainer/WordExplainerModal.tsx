@@ -40,6 +40,13 @@ export const WordExplainerModal: React.FC<WordExplainerModalProps> = ({
 
   const translateUrl = SpeechService.getGoogleTranslateUrl(cleanWord);
 
+  const displayPhonetic = vocabEntry?.phonetic;
+  const displayPos = vocabEntry?.partOfSpeech || (isStructural ? 'Functional Word' : 'Content Word');
+  const displayDef = vocabEntry?.definition || (isStructural 
+    ? `"${cleanWord}" is a foundational grammatical / structural word in English used to connect and modify core sentence clauses.`
+    : `Definition not available in local bank. Use the Google Translate button below to explore further.`);
+  const displayExample = vocabEntry?.businessExample;
+
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in"
@@ -58,15 +65,15 @@ export const WordExplainerModal: React.FC<WordExplainerModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-2xl font-bold tracking-tight text-white capitalize">{cleanWord}</h3>
-                {vocabEntry?.phonetic && (
+                {displayPhonetic && (
                   <span className="text-sm font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">
-                    {vocabEntry.phonetic}
+                    {displayPhonetic}
                   </span>
                 )}
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
-                  {vocabEntry?.partOfSpeech || (isStructural ? 'Functional Word' : 'Content Word')}
+                  {displayPos}
                 </span>
                 {vocabEntry && (
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -99,35 +106,33 @@ export const WordExplainerModal: React.FC<WordExplainerModalProps> = ({
             <label className="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5 mb-1.5">
               <Sparkles className="w-3.5 h-3.5" /> English Definition
             </label>
-            <p className="text-slate-200 text-base leading-relaxed bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
-              {vocabEntry?.definition || (
-                isStructural 
-                  ? `"${cleanWord}" is a foundational grammatical / structural word in English used to connect and modify core sentence clauses.`
-                  : `A high-frequency English content word commonly utilized in professional, academic, and daily communication.`
-              )}
-            </p>
+            <div className="text-slate-200 text-base leading-relaxed bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+              <p>{displayDef}</p>
+            </div>
           </div>
 
           {/* Business & Context Examples */}
-          <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5 mb-1.5">
-              <Layers className="w-3.5 h-3.5" /> Business Context Example
-            </label>
-            <div className="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/50 space-y-2">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm text-slate-200 italic">
-                  "{vocabEntry?.businessExample || `We ensure that ${cleanWord} is integrated appropriately into our organizational workflow.`}"
-                </p>
-                <button
-                  onClick={() => handlePlayExample(vocabEntry?.businessExample || `We ensure that ${cleanWord} is integrated appropriately into our organizational workflow.`)}
-                  className="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-slate-700 rounded-lg transition-colors flex-shrink-0"
-                  title="Listen to sentence"
-                >
-                  <Volume2 className="w-4 h-4" />
-                </button>
+          {displayExample && (
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5 mb-1.5">
+                <Layers className="w-3.5 h-3.5" /> Business Context Example
+              </label>
+              <div className="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/50 space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm text-slate-200 italic">
+                    "{displayExample}"
+                  </p>
+                  <button
+                    onClick={() => handlePlayExample(displayExample)}
+                    className="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-slate-700 rounded-lg transition-colors flex-shrink-0"
+                    title="Listen to sentence"
+                  >
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Synonyms & Collocations */}
           {vocabEntry?.synonyms && vocabEntry.synonyms.length > 0 && (
@@ -171,9 +176,9 @@ export const WordExplainerModal: React.FC<WordExplainerModalProps> = ({
         <div className="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <button
-              onClick={handlePlayTTS}
-              disabled={isPlayingAudio}
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-indigo-600/30"
+               onClick={handlePlayTTS}
+               disabled={isPlayingAudio}
+               className="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-indigo-600/30"
             >
               <Volume2 className="w-4 h-4" />
               <span>Pronounce Word</span>
