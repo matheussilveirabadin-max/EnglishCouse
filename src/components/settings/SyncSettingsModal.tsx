@@ -121,11 +121,16 @@ export const SyncSettingsModal: React.FC<SyncSettingsModalProps> = ({
     reader.onload = (event) => {
       try {
         const parsed = JSON.parse(event.target?.result as string);
-        if (parsed.moduleProgress && parsed.vocabularyBank) {
+        if (
+          parsed &&
+          typeof parsed === 'object' &&
+          parsed.moduleProgress && typeof parsed.moduleProgress === 'object' && !Array.isArray(parsed.moduleProgress) &&
+          parsed.vocabularyBank && typeof parsed.vocabularyBank === 'object' && !Array.isArray(parsed.vocabularyBank)
+        ) {
           onImportState(parsed);
           alert('Study progress imported successfully!');
         } else {
-          alert('Invalid backup JSON format.');
+          alert('Invalid backup JSON format. Missing required data structures.');
         }
       } catch (err) {
         alert('Failed to parse backup JSON file.');

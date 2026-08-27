@@ -263,6 +263,16 @@ export class StorageService {
     downloadAnchor.remove();
   }
 
+  private static sanitizeCsvField(val: string | undefined): string {
+    if (!val) return '""';
+    const clean = val.replace(/"/g, '""');
+    // Prepend single quote if it starts with injection-sensitive characters
+    if (/^[=+\-@]/.test(clean)) {
+      return `"\'${clean}"`;
+    }
+    return `"${clean}"`;
+  }
+
   /**
    * Exports errors to CSV (compatible with Google Sheets tab 'Registro de Erros e Revisão')
    */
@@ -272,15 +282,15 @@ export class StorageService {
       e.id,
       e.timestamp,
       e.moduleId,
-      `"${e.moduleTitle.replace(/"/g, '""')}"`,
-      `"${e.questionPrompt.replace(/"/g, '""')}"`,
-      `"${e.userAnswer.replace(/"/g, '""')}"`,
-      `"${e.correctAnswer.replace(/"/g, '""')}"`,
+      this.sanitizeCsvField(e.moduleTitle),
+      this.sanitizeCsvField(e.questionPrompt),
+      this.sanitizeCsvField(e.userAnswer),
+      this.sanitizeCsvField(e.correctAnswer),
       e.errorCategory,
       e.status,
       e.reviewCount,
       e.nextReviewDate,
-      `"${e.explanation.replace(/"/g, '""')}"`
+      this.sanitizeCsvField(e.explanation)
     ]);
 
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');

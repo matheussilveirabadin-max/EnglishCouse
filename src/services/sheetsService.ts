@@ -175,6 +175,15 @@ function updateScheduleSheet(sheet, moduleProgress) {
   }
 }
 
+function sanitizeForSheets(val) {
+  if (!val) return "";
+  var str = val.toString();
+  if (/^[=+\-@]/.test(str)) {
+    return "'" + str;
+  }
+  return str;
+}
+
 function updateErrorSheet(sheet, errorLogs) {
   var lastRow = sheet.getLastRow();
   if (lastRow > 1) {
@@ -191,10 +200,10 @@ function updateErrorSheet(sheet, errorLogs) {
 
     return [
       formatDate(e.timestamp),           // Col A: Data
-      moduleLabel,                       // Col B: Módulo de Origem
-      e.questionPrompt || "",            // Col C: Questão / Estrutura Problemática
-      e.userAnswer || "",                // Col D: Erro Cometido
-      e.correctAnswer || "",             // Col E: Regra / Correção
+      sanitizeForSheets(moduleLabel),    // Col B: Módulo de Origem
+      sanitizeForSheets(e.questionPrompt), // Col C: Questão
+      sanitizeForSheets(e.userAnswer),   // Col D: Erro Cometido (Vulnerable)
+      sanitizeForSheets(e.correctAnswer),// Col E: Regra / Correção
       statusText,                        // Col F: Status de Re-teste
       e.id || "",                        // Col G: ID
       e.nextReviewDate || "",            // Col H: Próxima Revisão
@@ -331,7 +340,7 @@ function readVocabSheet(sheet) {
       vocabularyBank: state.vocabularyBank
     };
 
-    if (settings.appsScriptUrl && settings.appsScriptUrl.trim().startsWith('http')) {
+    if (settings.appsScriptUrl && settings.appsScriptUrl.trim().startsWith('https://script.google.com/macros/s/')) {
       try {
         await fetch(settings.appsScriptUrl.trim(), {
           method: 'POST',
@@ -362,8 +371,8 @@ function readVocabSheet(sheet) {
     // Local simulation fallback
     await new Promise(resolve => setTimeout(resolve, 600));
     return {
-      success: true,
-      message: 'Local dataset synchronized. (Configure your Apps Script URL above to save live to Google Drive).',
+      success: true, // we say true so UI feels responsive if they don't use sheets
+      message: 'Local dataset synchronized. (Configure a valid Apps Script URL above to save live to Google Drive).',
       timestamp,
       syncedModulesCount: Object.keys(state.moduleProgress).length,
       syncedErrorsCount: state.errorLogs.length,
@@ -379,7 +388,7 @@ function readVocabSheet(sheet) {
   ): Promise<SyncResult> {
     const timestamp = new Date().toISOString();
 
-    if (settings.appsScriptUrl && settings.appsScriptUrl.trim().startsWith('http')) {
+    if (settings.appsScriptUrl && settings.appsScriptUrl.trim().startsWith('https://script.google.com/macros/s/')) {
       try {
         const response = await fetch(settings.appsScriptUrl.trim(), {
           method: 'GET'
@@ -422,7 +431,7 @@ function readVocabSheet(sheet) {
 
     return {
       success: false,
-      message: 'Apps Script Web App URL is required to pull data from Google Sheets.',
+      message: 'A valid Google Apps Script Web App URL is required to pull data from Google Sheets.',
       timestamp
     };
   }
