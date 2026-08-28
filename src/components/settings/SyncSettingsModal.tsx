@@ -17,7 +17,7 @@ export const SyncSettingsModal: React.FC<SyncSettingsModalProps> = ({
   onImportState,
   onClose
 }) => {
-  const [spreadsheetId] = useState(appState.syncSettings.spreadsheetId || SheetsService.SPREADSHEET_ID);
+  const [spreadsheetId, setSpreadsheetId] = useState(appState.syncSettings.spreadsheetId || SheetsService.SPREADSHEET_ID);
   const [appsScriptUrl, setAppsScriptUrl] = useState(appState.syncSettings.appsScriptUrl || '');
   const [apiKey] = useState(appState.syncSettings.apiKey || '');
   const [autoSync, setAutoSync] = useState(appState.syncSettings.autoSync || false);
@@ -168,22 +168,26 @@ export const SyncSettingsModal: React.FC<SyncSettingsModalProps> = ({
 
         {/* Target Spreadsheet Info */}
         <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-emerald-400 block">
-                Target Google Spreadsheet
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div className="flex-1 w-full">
+              <label className="text-xs font-bold uppercase tracking-wider text-emerald-400 block mb-1">
+                Target Google Spreadsheet ID
               </label>
-              <span className="text-xs font-mono text-slate-300">
-                ID: {spreadsheetId}
-              </span>
+              <input
+                type="text"
+                value={spreadsheetId}
+                onChange={(e) => setSpreadsheetId(e.target.value)}
+                placeholder="Paste your Google Spreadsheet ID here"
+                className="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-sm font-mono text-slate-300 placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+              />
             </div>
             <a
               href={sheetUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 text-xs font-semibold rounded-xl border border-emerald-500/30 transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 text-xs font-semibold rounded-xl border border-emerald-500/30 transition-colors h-[38px] whitespace-nowrap"
             >
-              <span>Open Spreadsheet</span>
+              <span>Open Sheet</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>
